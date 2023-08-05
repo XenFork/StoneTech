@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "union.xenfork.stonetech.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"ServerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
