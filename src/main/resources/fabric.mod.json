@@ -1,40 +1,42 @@
 {
-	"schemaVersion": 1,
-	"id": "stonetech",
-	"version": "${version}",
-	"name": "StoneTech",
-	"description": "Stone technology",
-	"authors": [
-		"crazy_piggy_"
-	],
-	"contact": {
-		"sources": "https://github.com/XenFork/StoneTech"
-	},
-	"license": "GPL-3.0 license",
-	"icon": "assets/stonetech/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"union.xenfork.stonetech.MainServer"
-		],
-		"client": [
-			"union.xenfork.stonetech.MainClient"
-		]
-	},
-	"mixins": [
-		"stonetech.mixins.json",
-		{
-			"config": "stonetech.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.14.21",
-		"minecraft": "~1.20.1",
-		"java": ">=17",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	}
+  "schemaVersion": 1,
+  "id": "stonetech",
+  "version": "${version}",
+  "name": "Stone Technology",
+  "description": "Stone technology",
+  "authors": [
+    "XenFork Union"
+  ],
+  "contributors": [
+    "crazy_piggy_",
+    "baka4n",
+    "squid233"
+  ],
+  "contact": {
+    "sources": "https://github.com/XenFork/StoneTech"
+  },
+  "license": "MIT",
+  "icon": "assets/stonetech/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "union.xenfork.stonetech.StoneTech"
+    ],
+    "client": [
+      "union.xenfork.stonetech.StoneTechClient"
+    ]
+  },
+  "mixins": [
+    "stonetech.mixins.json",
+    {
+      "config": "stonetech.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
 }
