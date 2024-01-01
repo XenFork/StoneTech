@@ -1,66 +1,84 @@
 package union.xenfork.stonetech.block;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.AbstractFurnaceBlock;
-import net.minecraft.block.BlockState;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import union.xenfork.stonetech.block.entity.SoulFurnaceBlockEntity;
 
-public class SoulFurnaceBlock extends AbstractFurnaceBlock {
-    public SoulFurnaceBlock(AbstractBlock.Settings settings) {
+import static union.xenfork.stonetech.block.entity.ModBlockEntities.SOUL_FURNACE_BLOCK_ENTITY;
+
+public class SoulFurnaceBlock extends BlockWithEntity implements BlockEntityProvider {
+    private static final VoxelShape SHAPE = Block.createCuboidShape(0, 0, 0, 16, 12, 16);
+
+    public static final MapCodec<SoulFurnaceBlock> CODEC = SoulFurnaceBlock.createCodec(SoulFurnaceBlock::new);
+
+    public SoulFurnaceBlock(Settings settings) {
         super(settings);
     }
 
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
+    }
+
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Nullable
+    @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new SoulFurnaceBlockEntity(pos, state);
     }
 
     @Override
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(world, type, BlockEntityType.FURNACE);
-    }
-
-    @Override
-    protected void openScreen(World world, BlockPos pos, PlayerEntity player) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof SoulFurnaceBlockEntity soulFurnaceBlockEntity) {
-            player.openHandledScreen(soulFurnaceBlockEntity);
-            player.incrementStat(Stats.INTERACT_WITH_FURNACE);
-        }
-    }
-
-    @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (state.get(LIT)) {
-            double d = (double) pos.getX() + 0.5;
-            double e = pos.getY();
-            double f = (double) pos.getZ() + 0.5;
-            if (random.nextDouble() < 0.1) {
-                world.playSound(d, e, f, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (state.getBlock() != newState.getBlock()) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof SoulFurnaceBlockEntity) {
+                ItemScatterer.spawn(world, pos, (SoulFurnaceBlockEntity)blockEntity);
+                world.updateComparators(pos,this);
             }
-
-            Direction direction = state.get(FACING);
-            Direction.Axis axis = direction.getAxis();
-            double g = 0.52;
-            double h = random.nextDouble() * 0.6 - 0.3;
-            double i = axis == Direction.Axis.X ? (double) direction.getOffsetX() * 0.52 : h;
-            double j = random.nextDouble() * 6.0 / 16.0;
-            double k = axis == Direction.Axis.Z ? (double) direction.getOffsetZ() * 0.52 : h;
-            world.addParticle(ParticleTypes.SMOKE, d + i, e + j, f + k, 0.0, 0.0, 0.0);
-            world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, d + i, e + j, f + k, 0.0, 0.0, 0.0);
+            super.onStateReplaced(state, world, pos, newState, moved);
         }
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (!world.isClient) {
+            NamedScreenHandlerFactory screenHandlerFactory = ((SoulFurnaceBlockEntity) world.getBlockEntity(pos));
+
+            if (screenHandlerFactory != null) {
+                player.openHandledScreen(screenHandlerFactory);
+            }
+        }
+
+        return ActionResult.SUCCESS;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return validateTicker(type, SOUL_FURNACE_BLOCK_ENTITY,
+            (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
     }
 }

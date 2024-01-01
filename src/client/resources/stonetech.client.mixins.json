@@ -3,7 +3,7 @@
 	"package": "union.xenfork.stonetech.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"ClientMixin"
+    "ClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

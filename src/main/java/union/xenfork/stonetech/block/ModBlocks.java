@@ -2,7 +2,6 @@ package union.xenfork.stonetech.block;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -12,7 +11,7 @@ import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 import static union.xenfork.stonetech.StoneTech.MODID;
 
 public class ModBlocks {
-    public static final SoulFurnaceBlock SOUL_FURNACE = new SoulFurnaceBlock(FabricBlockSettings.create().mapColor(MapColor.STONE_GRAY).requiresTool().strength(3.5f).luminance(createLightLevelFromLitBlockState(9)));
+    public static final SoulFurnaceBlock SOUL_FURNACE = new SoulFurnaceBlock(FabricBlockSettings.create().mapColor(MapColor.STONE_GRAY).requiresTool().strength(3.5f));
     public static final Block SOUL_SANDSTONE = new Block(FabricBlockSettings.create().mapColor(MapColor.BROWN).requiresTool().strength(0.8f));
     public static final Block CUT_SOUL_SANDSTONE = new Block(FabricBlockSettings.create().mapColor(MapColor.BROWN).requiresTool().strength(0.8f));
     public static final Block CHISELED_SOUL_SANDSTONE = new Block(FabricBlockSettings.create().mapColor(MapColor.BROWN).requiresTool().strength(0.8f));

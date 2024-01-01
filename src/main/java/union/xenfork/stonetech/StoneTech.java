@@ -8,6 +8,7 @@ import union.xenfork.stonetech.block.ModBlocks;
 import union.xenfork.stonetech.block.entity.ModBlockEntities;
 import union.xenfork.stonetech.item.ModItems;
 import union.xenfork.stonetech.item.ModItemGroups;
+import union.xenfork.stonetech.recipe.ModRecipes;
 
 public class StoneTech implements ModInitializer {
     public static final String MODID = "stonetech";
@@ -18,6 +19,6 @@ public class StoneTech implements ModInitializer {
 		ModBlocks.register();
 		ModItems.register();
 		ModItemGroups.register();
-        ModBlockEntities.register();
+        ModRecipes.register();
 	}
 }
